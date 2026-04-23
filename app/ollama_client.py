@@ -23,14 +23,18 @@ def query_ollama(prompt, image_bytes=None):
         return f"Error communicating with Ollama: {str(e)}"
 
 def get_action_from_ollama(user_goal, image_bytes, action_history):
-    system_prompt = """You are a PC automation assistant. You see a screenshot of a Mac OS desktop with a coordinate grid overlay.
-Vertical lines are numbered 0-10 (X axis). Horizontal lines are labeled A-K (Y axis).
+    system_prompt = """You are a PC automation assistant. You see a screenshot of a Mac OS desktop with a high-precision coordinate grid overlay.
+The grid is 100x100.
+X-axis (vertical lines) ranges from 0 to 100.
+Y-axis (horizontal lines) ranges from 0 to 100.
+Major lines and labels are drawn every 10 units. Minor lines are drawn every 1 unit for precision.
+
 Your goal is: {user_goal}
 Action History: {action_history}
 
-Analyze the screenshot and decide the next single action to move towards the goal.
+Analyze the screenshot, identify UI elements, and decide the next single action.
 Available actions:
-- MOVE_TO(X, Y): Move mouse to grid intersection or relative position (e.g., 5, B).
+- MOVE_TO(X, Y): Move mouse to specific coordinates (e.g., 55.5, 20). Use floats for sub-grid precision if needed.
 - CLICK(): Click left mouse button.
 - DOUBLE_CLICK(): Double click left mouse button.
 - TYPE("text"): Type the specified text.
@@ -39,11 +43,11 @@ Available actions:
 - DONE: If the goal is reached.
 
 Provide your response in JSON format with two fields:
-1. "thought": Your reasoning for this action.
-2. "action": The action string (e.g., 'MOVE_TO(5, B)').
+1. "thought": Your reasoning for this action, specifically describing what UI element you are targeting and its approximate coordinates.
+2. "action": The action string (e.g., 'MOVE_TO(42, 88)').
 
 Example:
-{{"thought": "I need to open the browser, which is located at bottom dock.", "action": "MOVE_TO(5, K)"}}
+{{"thought": "I need to click the Apple icon at the top left, which is around (2, 2).", "action": "MOVE_TO(2, 2)"}}
 """
     prompt = system_prompt.format(user_goal=user_goal, action_history=action_history)
     return query_ollama(prompt, image_bytes)

@@ -10,15 +10,16 @@ from app.executor import parse_coordinate, process_ollama_response
 
 class TestLogic(unittest.TestCase):
     def test_parse_coordinate(self):
-        # Grid size 10, max pixels 1000
+        # Grid size 100, max pixels 1000
+        # 0 -> 0
+        # 50 -> 500
+        # 100 -> 1000
         self.assertEqual(parse_coordinate("0", 1000), 0)
-        self.assertEqual(parse_coordinate("5", 1000), 500)
-        self.assertEqual(parse_coordinate("10", 1000), 1000)
+        self.assertEqual(parse_coordinate("50", 1000), 500)
+        self.assertEqual(parse_coordinate("100", 1000), 1000)
 
-        # Test letters
-        self.assertEqual(parse_coordinate("A", 1000), 0)
-        self.assertEqual(parse_coordinate("B", 1000), 100)
-        self.assertEqual(parse_coordinate("K", 1000), 1000)
+        # Test sub-grid precision
+        self.assertEqual(parse_coordinate("5.5", 1000), 55)
 
     def test_process_ollama_response(self):
         valid_json = '{"thought": "I should click", "action": "CLICK()"}'

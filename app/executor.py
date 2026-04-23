@@ -7,21 +7,15 @@ import json
 pyautogui.PAUSE = 1.0
 pyautogui.FAILSAFE = True
 
-def parse_coordinate(coord_str, max_val, grid_size=10):
+def parse_coordinate(coord_str, max_val, grid_size=100):
     """
-    Parses a coordinate from the grid system.
-    If it's a number (0-10) or a letter (A-K), it maps it to pixel coordinates.
+    Parses a coordinate from the grid system (0-100).
+    Maps it to pixel coordinates.
     """
-    coord_str = str(coord_str).strip().upper()
-
-    # Check if it's a letter (A-K)
-    if len(coord_str) == 1 and 'A' <= coord_str <= 'Z':
-        val = ord(coord_str) - ord('A')
-    else:
-        try:
-            val = float(coord_str)
-        except ValueError:
-            return 0
+    try:
+        val = float(coord_str)
+    except ValueError:
+        return 0
 
     # Map to pixels
     pixel_coord = (val / grid_size) * max_val

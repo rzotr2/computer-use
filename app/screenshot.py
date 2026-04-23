@@ -2,10 +2,11 @@ import mss
 from PIL import Image, ImageDraw, ImageFont
 import io
 
-def capture_screen_with_grid(grid_size=10):
+def capture_screen_with_grid(grid_size=100, major_step=10):
     """
-    Captures the primary monitor and draws a coordinate grid on it.
-    grid_size: Number of divisions (e.g., 10 means 10x10 grid).
+    Captures the primary monitor and draws a high-precision coordinate grid.
+    grid_size: Number of total divisions (e.g., 100x100).
+    major_step: Interval for drawing major lines and labels.
     """
     with mss.mss() as sct:
         # Get the primary monitor
@@ -18,33 +19,44 @@ def capture_screen_with_grid(grid_size=10):
         draw = ImageDraw.Draw(img)
         width, height = img.size
 
-        # Calculate step sizes
+        # Calculate step sizes for the 100x100 grid
         step_x = width / grid_size
         step_y = height / grid_size
 
-        # Try to load a font, fallback to default
         try:
-            # On Mac, Arial might be available. On Linux/others, maybe not.
-            # We'll use default if it fails.
             font = ImageFont.load_default()
         except:
             font = ImageFont.load_default()
 
-        # Draw vertical lines and labels
+        # Draw vertical lines
         for i in range(grid_size + 1):
             x = int(i * step_x)
             if x >= width: x = width - 1
-            draw.line([(x, 0), (x, height)], fill="red", width=1)
-            # Draw X coordinate label
-            draw.text((x + 2, 5), str(i), fill="red", font=font)
 
-        # Draw horizontal lines and labels
+            if i % major_step == 0:
+                # Major line
+                draw.line([(x, 0), (x, height)], fill=(255, 0, 0), width=2)
+                # Label at top and bottom
+                draw.text((x + 2, 5), str(i), fill="red", font=font)
+                draw.text((x + 2, height - 20), str(i), fill="red", font=font)
+            else:
+                # Minor line - thinner
+                draw.line([(x, 0), (x, height)], fill=(200, 0, 0), width=1)
+
+        # Draw horizontal lines
         for j in range(grid_size + 1):
             y = int(j * step_y)
             if y >= height: y = height - 1
-            draw.line([(0, y), (width, y)], fill="red", width=1)
-            # Draw Y coordinate label
-            draw.text((5, y + 2), chr(65 + j) if j < 26 else str(j), fill="red", font=font)
+
+            if j % major_step == 0:
+                # Major line
+                draw.line([(0, y), (width, y)], fill=(255, 0, 0), width=2)
+                # Label at left and right
+                draw.text((5, y + 2), str(j), fill="red", font=font)
+                draw.text((width - 25, y + 2), str(j), fill="red", font=font)
+            else:
+                # Minor line
+                draw.line([(0, y), (width, y)], fill=(200, 0, 0), width=1)
 
         return img
 
