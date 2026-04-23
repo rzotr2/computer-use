@@ -115,8 +115,8 @@ async def execute_step(request: StepRequest):
         return {"thought": thought, "action": action, "result": "WAITING FOR CONFIRMATION", "pending": True}
 
     # 5. Execute normal action
-    result = "Skipped"
-    if action and action != "NONE" and action != "DONE":
+    result = "No action taken"
+    if action and action != "NONE":
         try:
             result = execute_action(action)
         except Exception as e:

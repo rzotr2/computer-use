@@ -54,12 +54,17 @@ def execute_action(action_str):
         pyautogui.write(text)
         return f"Typed: {text}"
 
-    # PRESS("key")
+    # PRESS("key") or PRESS("key1+key2")
     press_match = re.match(r'PRESS\("(.+)"\)', action_str)
     if press_match:
-        key = press_match.group(1)
-        pyautogui.press(key)
-        return f"Pressed: {key}"
+        keys_str = press_match.group(1)
+        if "+" in keys_str:
+            keys = [k.strip() for k in keys_str.split("+")]
+            pyautogui.hotkey(*keys)
+            return f"Hotkey pressed: {' + '.join(keys)}"
+        else:
+            pyautogui.press(keys_str)
+            return f"Pressed: {keys_str}"
 
     # RUN_COMMAND("command")
     cmd_match = re.match(r'RUN_COMMAND\("(.+)"\)', action_str)

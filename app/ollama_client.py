@@ -38,9 +38,12 @@ Available actions:
 - CLICK(): Click left mouse button.
 - DOUBLE_CLICK(): Double click left mouse button.
 - TYPE("text"): Type the specified text.
-- PRESS("key"): Press a specific key (e.g., "enter", "command", "space").
+- PRESS("key"): Press a specific key (e.g., "enter", "command", "space"). You can use combinations like "command+t" or "shift+enter".
 - RUN_COMMAND("command"): Run a terminal command.
-- DONE: If the goal is reached.
+- DONE: ONLY if the goal is reached and YOU HAVE VERIFIED it on the current screenshot.
+
+DO NOT assume success. Always verify the state of the UI in the current screenshot before declaring the task finished.
+If the previous action didn't work as expected, try a different approach.
 
 Provide your response in JSON format with two fields:
 1. "thought": Your reasoning for this action, specifically describing what UI element you are targeting and its approximate coordinates.
