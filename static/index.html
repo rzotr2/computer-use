@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PC Controller</title>
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; height: 100vh; margin: 0; }
+        #header { padding: 10px; background: #333; color: white; }
+        #main { display: flex; flex: 1; overflow: hidden; }
+        #left-panel { flex: 2; display: flex; flex-direction: column; padding: 10px; border-right: 1px solid #ccc; }
+        #right-panel { flex: 1; padding: 10px; overflow-y: auto; background: #f9f9f9; }
+        #screenshot-container { flex: 1; border: 1px solid #000; position: relative; background: #eee; overflow: hidden; }
+        #screenshot { width: 100%; height: auto; display: block; }
+        .history-item { margin-bottom: 15px; padding: 10px; border-left: 4px solid #007bff; background: white; }
+        .thought { font-style: italic; color: #555; }
+        .action { font-weight: bold; color: #007bff; }
+        .result { color: #28a745; font-size: 0.9em; }
+        #controls { margin-top: 10px; display: flex; gap: 10px; }
+        #goal-input { flex: 1; padding: 8px; }
+        button { padding: 8px 16px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <h1>PC Controller Agent</h1>
+    </div>
+    <div id="main">
+        <div id="left-panel">
+            <div id="screenshot-container">
+                <img id="screenshot" src="" alt="Live Screenshot">
+            </div>
+            <div id="controls">
+                <input type="text" id="goal-input" placeholder="Enter your goal (e.g., 'Open Chrome and find cat images')">
+                <button onclick="setGoal()">Set Goal</button>
+                <button id="step-btn" onclick="takeStep()">Take Step</button>
+                <button onclick="refreshScreenshot()">Refresh Screen</button>
+            </div>
+        </div>
+        <div id="right-panel">
+            <h3>Action History</h3>
+            <div id="history-list"></div>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
