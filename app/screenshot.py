@@ -24,7 +24,8 @@ def capture_screen_with_grid(grid_size=100, major_step=10):
         step_y = height / grid_size
 
         try:
-            font = ImageFont.load_default()
+            # Try to load a larger font if possible
+            font = ImageFont.truetype("/System/Library/Fonts/Helvetica.ttc", 20)
         except:
             font = ImageFont.load_default()
 
@@ -35,13 +36,18 @@ def capture_screen_with_grid(grid_size=100, major_step=10):
 
             if i % major_step == 0:
                 # Major line
-                draw.line([(x, 0), (x, height)], fill=(255, 0, 0), width=2)
+                draw.line([(x, 0), (x, height)], fill=(255, 0, 0, 150), width=2)
                 # Label at top and bottom
-                draw.text((x + 2, 5), str(i), fill="red", font=font)
-                draw.text((x + 2, height - 20), str(i), fill="red", font=font)
+                label = str(i)
+                # Draw label with background for better visibility
+                draw.rectangle([x + 2, 5, x + 30, 30], fill=(255, 255, 255, 180))
+                draw.text((x + 4, 5), label, fill="red", font=font)
+
+                draw.rectangle([x + 2, height - 35, x + 30, height - 5], fill=(255, 255, 255, 180))
+                draw.text((x + 4, height - 35), label, fill="red", font=font)
             else:
                 # Minor line - thinner
-                draw.line([(x, 0), (x, height)], fill=(200, 0, 0), width=1)
+                draw.line([(x, 0), (x, height)], fill=(200, 0, 0, 80), width=1)
 
         # Draw horizontal lines
         for j in range(grid_size + 1):
@@ -50,13 +56,17 @@ def capture_screen_with_grid(grid_size=100, major_step=10):
 
             if j % major_step == 0:
                 # Major line
-                draw.line([(0, y), (width, y)], fill=(255, 0, 0), width=2)
+                draw.line([(0, y), (width, y)], fill=(255, 0, 0, 150), width=2)
                 # Label at left and right
-                draw.text((5, y + 2), str(j), fill="red", font=font)
-                draw.text((width - 25, y + 2), str(j), fill="red", font=font)
+                label = str(j)
+                draw.rectangle([5, y + 2, 35, y + 25], fill=(255, 255, 255, 180))
+                draw.text((7, y + 2), label, fill="red", font=font)
+
+                draw.rectangle([width - 40, y + 2, width - 5, y + 25], fill=(255, 255, 255, 180))
+                draw.text((width - 38, y + 2), label, fill="red", font=font)
             else:
                 # Minor line
-                draw.line([(0, y), (width, y)], fill=(200, 0, 0), width=1)
+                draw.line([(0, y), (width, y)], fill=(200, 0, 0, 80), width=1)
 
         return img
 

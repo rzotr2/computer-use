@@ -25,9 +25,15 @@ def query_ollama(prompt, image_bytes=None):
 def get_action_from_ollama(user_goal, image_bytes, action_history):
     system_prompt = """You are a PC automation assistant. You see a screenshot of a Mac OS desktop with a high-precision coordinate grid overlay.
 The grid is 100x100.
-X-axis (vertical lines) ranges from 0 to 100.
-Y-axis (horizontal lines) ranges from 0 to 100.
-Major lines and labels are drawn every 10 units. Minor lines are drawn every 1 unit for precision.
+X-axis (vertical lines) ranges from 0 to 100 (left to right).
+Y-axis (horizontal lines) ranges from 0 to 100 (top to bottom).
+Major lines and labels are drawn every 10 units with white backgrounds for readability. Minor lines are drawn every 1 unit.
+
+To be precise:
+1. Identify the target UI element.
+2. Look at the nearest major grid labels (the numbers in white boxes).
+3. Use the minor lines to find the exact coordinate.
+4. The center of the screen is (50, 50). The top-left is (0, 0).
 
 Your goal is: {user_goal}
 Action History: {action_history}

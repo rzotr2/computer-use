@@ -23,10 +23,14 @@ async function refreshScreenshot() {
     }
 }
 
+let isAuto = false;
+
 async function takeStep(confirmed = false) {
     const btn = document.getElementById('step-btn');
-    btn.disabled = true;
-    btn.innerText = "Thinking...";
+    if (!isAuto) {
+        btn.disabled = true;
+        btn.innerText = "Thinking...";
+    }
 
     try {
         const response = await fetch('/step', {
@@ -39,24 +43,65 @@ async function takeStep(confirmed = false) {
         if (data.error) {
             if (data.pending) {
                 if (confirm(`Action requires confirmation: ${data.action}. Proceed?`)) {
-                    takeStep(true);
+                    return await takeStep(true);
                 } else {
                     alert("Action cancelled.");
+                    stopAuto();
                 }
             } else {
                 alert(data.error);
+                stopAuto();
             }
         } else {
             addHistoryItem(data);
             refreshScreenshot();
+
+            if (isAuto && data.action !== "DONE") {
+                // Wait 1 second before next step in auto mode
+                setTimeout(takeStep, 1000);
+            } else if (data.action === "DONE") {
+                stopAuto();
+            }
         }
     } catch (e) {
         console.error(e);
         alert("Error taking step");
+        stopAuto();
     } finally {
-        btn.disabled = false;
-        btn.innerText = "Take Step";
+        if (!isAuto) {
+            btn.disabled = false;
+            btn.innerText = "Take Step";
+        }
     }
+}
+
+function toggleAuto() {
+    if (isAuto) {
+        stopAuto();
+    } else {
+        startAuto();
+    }
+}
+
+function startAuto() {
+    isAuto = true;
+    const btn = document.getElementById('auto-btn');
+    btn.innerText = "Stop Autonomous";
+    btn.style.backgroundColor = "#dc3545";
+    btn.style.color = "white";
+    takeStep();
+}
+
+function stopAuto() {
+    isAuto = false;
+    const btn = document.getElementById('auto-btn');
+    btn.innerText = "Start Autonomous";
+    btn.style.backgroundColor = "";
+    btn.style.color = "";
+
+    const stepBtn = document.getElementById('step-btn');
+    stepBtn.disabled = false;
+    stepBtn.innerText = "Take Step";
 }
 
 function addHistoryItem(item) {
